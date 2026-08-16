@@ -23,12 +23,22 @@ app.use(express.json());
 // Routes
 app.use('/api', routes);
 
-// Swagger documentation
+// Swagger UI Options with CDN fallbacks to prevent 404 asset errors on cloud hosting
+const swaggerUiOptions = {
+  customCssUrl: 'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui.min.css',
+  customJs: [
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-bundle.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.0.0/swagger-ui-standalone-preset.js',
+  ],
+  customSiteTitle: 'Health App API Docs',
+};
+
+// Swagger documentation routes
 app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpecs);
 });
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs, swaggerUiOptions));
 
 // Redirect root to Swagger UI automatically
 app.get('/', (req, res) => {
