@@ -1,0 +1,999 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Sogʻliq va Tibbiyot Ilovasi API",
+    "version": "1.0.0",
+    "description": "Sogʻliqni saqlash, sport va dorilar monitoringi ilovasi uchun mahalliy (local) REST API hujjatlari"
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Mahalliy Nisbiy Server (Relative Local Server)"
+    },
+    {
+      "url": "http://localhost:5000/api",
+      "description": "Localhost Server"
+    },
+    {
+      "url": "http://127.0.0.1:5000/api",
+      "description": "127.0.0.1 Server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Tizimga kirgandan soʻng olingan JWT tokenni \"Bearer <token>\" koʻrinishida kiriting"
+      }
+    },
+    "schemas": {
+      "RegisterInput": {
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "ali_valiyev"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ali@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "parol12345"
+          }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "example": "ali@example.com"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "example": "parol12345"
+          }
+        }
+      },
+      "AuthResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "username": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "health_score": {
+            "type": "integer",
+            "example": 85
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WaterInput": {
+        "type": "object",
+        "required": [
+          "amount"
+        ],
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "example": 250,
+            "description": "Suv miqdori (ml)"
+          }
+        }
+      },
+      "Water": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "amount": {
+            "type": "integer",
+            "example": 250
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "WorkoutInput": {
+        "type": "object",
+        "required": [
+          "type",
+          "duration"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "example": "Yugurish"
+          },
+          "duration": {
+            "type": "integer",
+            "example": 30,
+            "description": "Davomiyligi (daqiqa)"
+          },
+          "calories": {
+            "type": "integer",
+            "example": 250
+          }
+        }
+      },
+      "Workout": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string"
+          },
+          "duration": {
+            "type": "integer"
+          },
+          "calories": {
+            "type": "integer"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "SleepInput": {
+        "type": "object",
+        "required": [
+          "duration"
+        ],
+        "properties": {
+          "duration": {
+            "type": "number",
+            "format": "float",
+            "example": 7.5,
+            "description": "Uyqu davomiyligi (soat)"
+          },
+          "quality": {
+            "type": "string",
+            "enum": [
+              "poor",
+              "fair",
+              "good",
+              "excellent"
+            ],
+            "example": "good"
+          }
+        }
+      },
+      "Sleep": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "duration": {
+            "type": "number"
+          },
+          "quality": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MedicineInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "dose",
+          "time"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Paracetamol"
+          },
+          "dose": {
+            "type": "string",
+            "example": "500mg"
+          },
+          "time": {
+            "type": "string",
+            "example": "08:00:00"
+          }
+        }
+      },
+      "Medicine": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "dose": {
+            "type": "string"
+          },
+          "time": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "taken",
+              "skipped"
+            ],
+            "example": "pending"
+          }
+        }
+      },
+      "MedicineStatusInput": {
+        "type": "object",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "taken",
+              "skipped"
+            ],
+            "example": "taken"
+          }
+        }
+      },
+      "SOSContactInput": {
+        "type": "object",
+        "required": [
+          "contactName",
+          "contactPhone"
+        ],
+        "properties": {
+          "contactName": {
+            "type": "string",
+            "example": "Shoshilinch aloqa"
+          },
+          "contactPhone": {
+            "type": "string",
+            "example": "+998901234567"
+          },
+          "message": {
+            "type": "string",
+            "example": "Menga yordam kerak!"
+          }
+        }
+      },
+      "SOSContact": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "Xatolik matni"
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/workout": {
+      "post": {
+        "tags": [
+          "Workout"
+        ],
+        "summary": "Mashgʻulot (sport) yozuvini qoʻshish",
+        "operationId": "post_api_workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkoutInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Mashgʻulot saqlandi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Workout"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Workout"
+        ],
+        "summary": "Barcha mashgʻulotlar roʻyxatini olish",
+        "operationId": "get_api_workout",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mashgʻulotlar roʻyxati",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Workout"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/water": {
+      "post": {
+        "tags": [
+          "Water"
+        ],
+        "summary": "Suv isteʼmolini kiritish",
+        "operationId": "post_api_water",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WaterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Suv yozuvi qoʻshildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Water"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Water"
+        ],
+        "summary": "Suv isteʼmoli tarixini olish",
+        "operationId": "get_api_water",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suv yozuvlari roʻyxati",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Water"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/sos/contact": {
+      "post": {
+        "tags": [
+          "SOS"
+        ],
+        "summary": "Shoshilinch aloqa kontaktini qoʻshish",
+        "operationId": "post_api_sos_contact",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SOSContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "SOS kontakti saqlandi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SOSContact"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "SOS"
+        ],
+        "summary": "SOS kontaktlari roʻyxatini olish",
+        "operationId": "get_api_sos_contact",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SOS kontaktlari roʻyxati",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SOSContact"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/sos/send": {
+      "post": {
+        "tags": [
+          "SOS"
+        ],
+        "summary": "Saqlangan barcha kontaktlarga Shoshilinch SOS xabarini yuborish",
+        "operationId": "post_api_sos_send",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "SOS xabari muvaffaqiyatli yuborildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "SOS yuborildi 2 ta kontaktga"
+                    },
+                    "contacts": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/SOSContact"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/sleep": {
+      "post": {
+        "tags": [
+          "Sleep"
+        ],
+        "summary": "Uyqu maʼlumotlarini kiritish",
+        "operationId": "post_api_sleep",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SleepInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Uyqu yozuvi saqlandi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sleep"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Sleep"
+        ],
+        "summary": "Uyqu yozuvlari tarixini olish",
+        "operationId": "get_api_sleep",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Uyqu yozuvlari roʻyxati",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Sleep"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/medicine": {
+      "post": {
+        "tags": [
+          "Medicine"
+        ],
+        "summary": "Dori eslatmasini qoʻshish",
+        "operationId": "post_api_medicine",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicineInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Dori eslatmasi saqlandi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Medicine"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Medicine"
+        ],
+        "summary": "Dorilar roʻyxatini olish",
+        "operationId": "get_api_medicine",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dorilar roʻyxati",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Medicine"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/medicine/{id}": {
+      "put": {
+        "tags": [
+          "Medicine"
+        ],
+        "summary": "Dori ichilganlik holatini yangilash",
+        "operationId": "put_api_medicine_id",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Dori ID si"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicineStatusInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Holat yangilandi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "example": "Holat yangilandi"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/health/score": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Bugungi umumiy salomatlik ballini (Health Score) hisoblash va olish",
+        "operationId": "get_api_health_score",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Salomatlik bali va tafsilotlari",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "health_score": {
+                      "type": "integer",
+                      "example": 85
+                    },
+                    "details": {
+                      "type": "object",
+                      "properties": {
+                        "waterScore": {
+                          "type": "number",
+                          "example": 20
+                        },
+                        "workoutScore": {
+                          "type": "number",
+                          "example": 15
+                        },
+                        "sleepScore": {
+                          "type": "number",
+                          "example": 30
+                        },
+                        "medicineScore": {
+                          "type": "number",
+                          "example": 20
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Yangi foydalanuvchini roʻyxatdan oʻtkazish",
+        "operationId": "post_api_auth_register",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Foydalanuvchi muvaffaqiyatli roʻyxatdan oʻtdi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Foydalanuvchi allaqachon mavjud",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server xatosi"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Tizimga kirish (Login)",
+        "operationId": "post_api_auth_login",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Muvaffaqiyatli tizimga kirildi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Email yoki parol notoʻgʻri",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server xatosi"
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Joriy foydalanuvchi profil maʼlumotlarini olish",
+        "operationId": "get_api_auth_me",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profil maʼlumotlari",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Avtorizatsiyadan oʻtilmagan"
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}
