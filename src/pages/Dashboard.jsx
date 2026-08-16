@@ -72,7 +72,7 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary-deep to-teal-700 p-6 text-white shadow-lift"
+        className="relative overflow-hidden rounded-2xl bg-linear-to-br from-primary via-primary-deep to-teal-700 p-6 text-white shadow-lift"
       >
         <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full bg-white/10" />
         <div className="absolute -bottom-24 right-32 h-64 w-64 rounded-full bg-white/5" />

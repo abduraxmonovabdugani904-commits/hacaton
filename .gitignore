@@ -1,15 +1,21 @@
-<<<<<<< HEAD
+# Dependencies
 node_modules/
+package-lock.json
+yarn.lock
+
+# Build output
 dist/
+dist-ssr/
+build/
 .vite/
+
+# Environment variables
 .env
-*.log
-database.sqlite
-*.sqlite
-*.exe
-=======
+.env.*
+!.env.example
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -17,17 +23,26 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-.env
-.env.*
+# Database
+database.sqlite
+*.db
+*.sqlite
+*.sqlite3
 
-# Editor directories and files
+# IDE
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Executables
+*.exe
+*.dll
+*.so
+*.dylib
 .DS_Store
 *.suo
 *.ntvs*

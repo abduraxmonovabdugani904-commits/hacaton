@@ -106,7 +106,7 @@ export default function Coach() {
     <div className="mx-auto flex h-[calc(100vh-8.5rem)] max-w-2xl flex-col">
       <Card hover={false} className="flex flex-1 flex-col overflow-hidden p-0">
         <div className="flex items-center gap-3 border-b border-line px-5 py-4 dark:border-night-line">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary-deep text-white shadow-lift">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-linear-to-br from-primary to-primary-deep text-white shadow-lift">
             <Sparkles size={18} />
           </div>
           <div>
