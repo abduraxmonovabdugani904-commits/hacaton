@@ -30,8 +30,9 @@ app.get('/api-docs.json', (req, res) => {
 });
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
+// Redirect root to Swagger UI automatically
 app.get('/', (req, res) => {
-  res.json({ message: 'Health App Backend is running!' });
+  res.redirect('/api-docs');
 });
 
 function getLocalIp() {
